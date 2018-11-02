@@ -1,3 +1,5 @@
+<?php session_start(); ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -10,8 +12,6 @@
 
 <body>
 <?php
-session_start();
-
 // define variables and set to empty values
 $usernameErr = $pswdErr = "";
 $username = $pswd = "";
@@ -31,10 +31,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         $pswd = test_input($_POST["pswd"]);
     }
-    
+
     if ($ok) {
         // Create connection
-        $conn = new mysqli("localhost", "roberto", "amsesr", "alumnos");
+        $conn = new mysqli("localhost", "roberto", "Amsesr.2108", "alumnos");
         // Check connection
         if ($conn->connect_error) {
             die("Connection failed: " . $conn->connect_error);
@@ -51,22 +51,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $_SESSION['loggedin'] = true;
                 } else {
                     $ok = false;
-                    $pswdErr = "La contrasenya no és correcte";
+                    $pswdErr = "La contrasenya no és correcta";
                 }
             }
         } else {
             $ok = false;
             $usernameErr = "El nom d'usuari no existeix";
         }
-        
+
         $conn->close();
-    
+
         if ($ok) {
             echo '<script>window.location.href = "load.php";</script>';
         }
     }
 }
-    
+
 function test_input($data) {
   $data = trim($data);
   $data = stripslashes($data);
@@ -95,7 +95,6 @@ function test_input($data) {
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>
 </div>
-    
-</body>
-</html> 
 
+</body>
+</html>

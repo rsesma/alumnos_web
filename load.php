@@ -1,3 +1,6 @@
+<?php session_start(); ?>
+
+<!DOCTYPE html>
 <html>
 <head>
     <title>Alumnes ST</title>
@@ -13,11 +16,9 @@
 
 <body>
 <?php
-session_start();
-
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
     // Create connection
-    $conn = new mysqli("localhost", "roberto", "amsesr", "alumnos");
+    $conn = new mysqli("localhost", "roberto", "Amsesr.2108", "alumnos");
     // Check connection
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
@@ -27,7 +28,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
     $conn->query("SET CHARACTER SET utf8");
     $conn->query("SET SESSION collation_connection = 'utf8_unicode_ci'");
 
-    $sql = "SELECT * FROM alumnos_clase";
+    $sql = "SELECT * FROM clase";
     $result = $conn->query($sql);
     $ok = ($result->num_rows > 0);
 } else {
@@ -42,19 +43,19 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
     <table cellpadding="0" cellspacing="0" border="0" class="datatable table table-striped table-bordered" id="alumnes">
         <thead>
             <tr>
-                <th>Periodo</th>
-                <th>Grupo</th>
+                <th>Període</th>
+                <th>Grup</th>
                 <th>DNI</th>
                 <th>PC</th>
-                <th>Nombre</th>
-                <th>Fijo</th>
+                <th>Nomb</th>
+                <th>Fix</th>
                 <th>Clase</th>
-                <th>Comentario</th>
+                <th>Comentari</th>
             </tr>
         </thead>
         <tbody>
         <?php while ($row = mysqli_fetch_array($result)) { ?>
-            <?php $url = 'alumno.php?grupo='.$row["Grupo"].'&dni='.$row["DNI"]; ?>
+            <?php $url = 'alumno.php?periodo='.$row["Periodo"].'&grupo='.$row["Grupo"].'&dni='.$row["DNI"]; ?>
             <tr>
                 <td><?php echo $row["Periodo"]; ?></td>
                 <td><?php echo $row["Grupo"]; ?></td>
@@ -62,20 +63,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
                 <td><?php echo $row["PC"]; ?></td>
                 <td><?php echo $row["nom"]; ?></td>
                 <td><?php echo ($row["Fijo"]==1 ? "Sí" : "No"); ?></td>
-                <td><?php switch ($row["CLASE"]) {
-                            case 1:
-                              echo "APROBADO";
-                              break;
-                            case 2:
-                              echo "BIEN";
-                              break;
-                            case 3:
-                              echo "NOTABLE";
-                              break;
-                            case 4:
-                              echo "EXCELENTE";
-                              break;
-                            } ?></td>
+                <td><?php echo $row["NCLASE"]; ?></td>
                 <td><?php echo $row["Comentario"]; ?></td>
             </tr>
         <?php } ?>
