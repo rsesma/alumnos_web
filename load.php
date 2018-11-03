@@ -28,7 +28,25 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
     $conn->query("SET CHARACTER SET utf8");
     $conn->query("SET SESSION collation_connection = 'utf8_unicode_ci'");
 
-    $sql = "SELECT * FROM clase";
+    $txres = "";
+
+    if ($_SERVER["REQUEST_METHOD"] == "POST" ) {
+      $fijo = ($_POST["fijo"] ? 1 : 0);
+      $pc = (!empty($_POST["pc"]) ? ", PC=".$_POST["pc"] : ", PC= NULL");
+      $clase = (!empty($_POST["clase"]) ? ", CLASE=".$_POST["clase"] : "");
+      $coment = (!empty($_POST["coment"]) ? ", Comentario='".$_POST["coment"]."'" : ", Comentario= NULL");
+      $sql = "UPDATE alumnos SET Fijo=".$fijo.$pc.$clase.$coment." WHERE Grupo='".$_POST["grupo"]."' AND DNI='".$_POST["dni"]."'";
+
+      if ($conn->query($sql) === TRUE) {
+          $txres = "Registe actualitzat correctament";
+      } else {
+          $txres = "Error actualitzant registre: ".$conn->error;
+      }
+
+      $sql = "SELECT * FROM clase WHERE Grupo = '".$_POST["grupo"]."'";
+    } else {
+      $sql = "SELECT * FROM clase";
+    }
     $result = $conn->query($sql);
     $ok = ($result->num_rows > 0);
 } else {
@@ -40,6 +58,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
 <div id="wrap">
 <div class="container">
     <h2>Alumnes cursos Stata</h2>
+    <p><?php echo $txres;?> </p>
     <table cellpadding="0" cellspacing="0" border="0" class="datatable table table-striped table-bordered" id="alumnes">
         <thead>
             <tr>
@@ -47,7 +66,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
                 <th>Grup</th>
                 <th>DNI</th>
                 <th>PC</th>
-                <th>Nomb</th>
+                <th>Nom</th>
                 <th>Fix</th>
                 <th>Clase</th>
                 <th>Comentari</th>
@@ -55,7 +74,7 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
         </thead>
         <tbody>
         <?php while ($row = mysqli_fetch_array($result)) { ?>
-            <?php $url = 'alumno.php?periodo='.$row["Periodo"].'&grupo='.$row["Grupo"].'&dni='.$row["DNI"]; ?>
+            <?php $url = 'alumno.php?grupo='.$row["Grupo"].'&dni='.$row["DNI"]; ?>
             <tr>
                 <td><?php echo $row["Periodo"]; ?></td>
                 <td><?php echo $row["Grupo"]; ?></td>
@@ -73,9 +92,11 @@ if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
 </div>
 
 <script type="text/javascript">
-    $(document).ready(function () {
-        $('#alumnes').dataTable();
+  $(document).ready(function() {
+    $('#alumnes').DataTable( {
+        "lengthMenu": [[30, 35, 50, -1], [30, 35, 50, "All"]]
     });
+  });
 </script>
 
 <?php $conn->close(); ?>
