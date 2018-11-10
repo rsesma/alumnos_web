@@ -15,7 +15,7 @@ $dni = $_GET["dni"];
 
 if (isset($_SESSION['loggedin']) && $_SESSION['loggedin'] == true) {
     // Create connection
-    $conn = new mysqli("localhost", "roberto", "Amsesr.2108", "alumnos");
+    $conn = new mysqli("localhost", "rsesma", "Amsesr.1977", "alumnos");
     // Check connection
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
